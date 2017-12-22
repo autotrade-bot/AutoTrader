@@ -1,7 +1,7 @@
 {
   "driver": {
-    "api": "autotrade.driver.api.bitflyer",
-    "chart": "autotrade.driver.chart.bitflyer",
-    "strategy": "autotrade.driver.strategy.script"
+    "api": "autotrade.driver.api.bitflyer.BitflyerApiDriver",
+    "chart": "autotrade.driver.chart.bitflyer.BitflyerChartDriver",
+    "strategy": "autotrade.driver.strategy.script.StrategyDriver"
   }
 }

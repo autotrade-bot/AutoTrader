@@ -8,7 +8,7 @@ class AutotradeWorker():
         drivers = {}
         driver_info = conf['driver']
         for key, val in driver_info.items():
-            drivers[key] = importutils.import_module(val)
+            drivers[key] = importutils.import_class(val)
         return drivers
 
     def start(self):
