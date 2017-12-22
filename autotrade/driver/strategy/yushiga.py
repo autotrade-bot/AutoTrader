@@ -58,7 +58,7 @@ class MovingAverageStrategy:
                     if btc * close_price > jpy:
                         return 'sell', btc
 
-            return 'nothing', 0
+        return 'nothing', 0
 
     def get_next_action(self, api_dirver):
         p = subprocess.Popen('curl https://api.cryptowat.ch/markets/bitflyer/btcjpy/ohlc?periods=60', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
