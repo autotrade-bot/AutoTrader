@@ -2,6 +2,6 @@
   "driver": {
     "api": "autotrade.driver.api.bitflyer.BitflyerApiDriver",
     "chart": "autotrade.driver.chart.bitflyer.BitflyerChartDriver",
-    "strategy": "autotrade.driver.strategy.script.StrategyDriver"
+    "strategy": "autotrade.driver.strategy.exec.StrategyDriver"
   }
 }
