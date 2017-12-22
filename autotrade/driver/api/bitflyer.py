@@ -6,7 +6,7 @@ class BitflyerFxApiDriver():
     def get_balance(self):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         result = {}
-        positions = api.getpositions()
+        positions = api.getpositions(product_code="FX_BTC_JPY")
         collateral = api.getcollateral()
         if len(positions) > 0:
             pos = positions.pop()

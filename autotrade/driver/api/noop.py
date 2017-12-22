@@ -6,8 +6,17 @@ class NoopApiDriver():
     def get_balance(self):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         result = {}
-        for balance in api.getbalance():
-            result[balance.get("currency_code")] = balance.get("available")
+        positions = api.getpositions(product_code="FX_BTC_JPY")
+        collateral = api.getcollateral()
+        print(positions)
+        if len(positions) > 0:
+            pos = positions.pop()
+            result["BTC"] = pos['size']
+            result["JPY"] = 0.0
+        else:
+            result["BTC"] = 0.0
+            result["JPY"] = collateral['collateral']
+        print(result)
         return result
 
     def execute(self, strategy_result):
