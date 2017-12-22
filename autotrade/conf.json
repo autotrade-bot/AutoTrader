@@ -1,7 +1,7 @@
 {
   "driver": {
-    "api": "autotrade.driver.api.bitflyer.BitflyerApiDriver",
+    "api": "autotrade.driver.api.noop.NoopApiDriver",
     "chart": "autotrade.driver.chart.bitflyer.BitflyerChartDriver",
-    "strategy": "autotrade.driver.strategy.exec.StrategyDriver"
+    "strategy": "autotrade.driver.strategy.yushiga.MovingAverageStrategy"
   }
 }
