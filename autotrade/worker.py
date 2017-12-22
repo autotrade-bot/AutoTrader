@@ -17,7 +17,6 @@ class AutotradeWorker():
 
     def execute(self):
         action_json = self.drivers['strategy'].get_next_action(self.drivers['api'])
-        import pdb; pdb.set_trace()
         self.drivers['api'].execute(json.loads(action_json))
 
 worker = AutotradeWorker()
