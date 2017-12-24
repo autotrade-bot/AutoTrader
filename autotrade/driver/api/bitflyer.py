@@ -21,7 +21,7 @@ class BitflyerFxApiDriver():
         return getattr(self, strategy_result.get('action'))(strategy_result.get('amount'))
     
     def buy(self, amount):
-        api = pybitflyer.API(api_key=os.env['API_KEY'], api_secret=os.env['API_SECRET'])
+        api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         r = api.sendchildorder(product_code="FX_BTC_JPY",
                        child_order_type="MARKET",
                        side="BUY",
@@ -32,7 +32,7 @@ class BitflyerFxApiDriver():
         return r.status_code
     
     def sell(self, amount):
-        api = pybitflyer.API(api_key=os.env['API_KEY'], api_secret=os.env['API_SECRET'])
+        api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         r = api.sendchildorder(product_code="FX_BTC_JPY",
                        child_order_type="MARKET",
                        side="SELL",
@@ -64,7 +64,7 @@ class BitflyerApiDriver():
         return getattr(self, strategy_result.get('action'))(strategy_result.get('amount'))
     
     def buy(self, amount):
-        api = pybitflyer.API(api_key=os.env['API_KEY'], api_secret=os.env['API_SECRET'])
+        api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         r = api.sendchildorder(product_code="FX_BTC_JPY",
                        child_order_type="MARKET",
                        side="BUY",
@@ -75,7 +75,7 @@ class BitflyerApiDriver():
         return r.status_code
     
     def sell(self, amount):
-        api = pybitflyer.API(api_key=os.env['API_KEY'], api_secret=os.env['API_SECRET'])
+        api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         r = api.sendchildorder(product_code="FX_BTC_JPY",
                        child_order_type="MARKET",
                        side="SELL",
