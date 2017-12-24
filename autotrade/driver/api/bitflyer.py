@@ -25,11 +25,13 @@ class BitflyerFxApiDriver():
         r = api.sendchildorder(product_code="FX_BTC_JPY",
                        child_order_type="MARKET",
                        side="BUY",
-                       size=self.jpy_to_size("FX_BTC", amount),
+                       size=round(self.jpy_to_size("FX_BTC", amount)),
                        minute_to_expire=10000,
                        time_in_force="GTC"
                        )
-        return r.status_code
+        print(round(self.jpy_to_size("FX_BTC", amount)))
+        print(r)
+        return r
     
     def sell(self, amount):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
@@ -40,16 +42,16 @@ class BitflyerFxApiDriver():
                        minute_to_expire=10000,
                        time_in_force="GTC"
                        )
-        return r.status_code
+        return r
 
-    def nothing(self):
+    def nothing(self, amount):
         print("nothing")
         return 200
     
     def jpy_to_size(self, currency, price):
         api = pybitflyer.API()
         ticker =  api.ticker(product_code="%s_JPY" % currency)
-        return price / ticker['best_bid']
+        return float(price) / float(ticker['best_bid'])
 
 class BitflyerApiDriver():
 
