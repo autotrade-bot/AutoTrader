@@ -17,7 +17,12 @@ class AutotradeWorker():
 
     def execute(self):
         action_json = self.drivers['strategy'].get_next_action(self.drivers['api'])
+        print(action_json)
+        return self.drivers['api'].execute(json.loads(action_json))
+
+    def test(self):
+        action_json = '{"action": "buy", "amount": "5000"}'
         self.drivers['api'].execute(json.loads(action_json))
 
 worker = AutotradeWorker()
-worker.execute()
+print(worker.execute())
