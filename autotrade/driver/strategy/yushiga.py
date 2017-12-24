@@ -61,7 +61,7 @@ class MovingAverageStrategy:
         return 'nothing', 0
 
     def get_next_action(self, api_dirver):
-        p = subprocess.Popen('curl https://api.cryptowat.ch/markets/bitflyer/btcjpy/ohlc?periods=60', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen('curl https://api.cryptowat.ch/markets/bitflyer/btcfxjpy/ohlc?periods=60', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         p.wait()
         self.chart = json.loads(p.stdout.read().decode('utf-8'))['result']['60']
         result = {}
