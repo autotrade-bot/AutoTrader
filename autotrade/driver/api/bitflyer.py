@@ -25,11 +25,11 @@ class BitflyerFxApiDriver():
         r = api.sendchildorder(product_code="FX_BTC_JPY",
                        child_order_type="MARKET",
                        side="BUY",
-                       size=round(self.jpy_to_size("FX_BTC", amount)),
+                       size=round(self.jpy_to_size("FX_BTC", amount), 4),
                        minute_to_expire=10000,
                        time_in_force="GTC"
                        )
-        print(round(self.jpy_to_size("FX_BTC", amount)))
+        print(round(self.jpy_to_size("FX_BTC", amount), 4))
         print(r)
         return r
     

@@ -1,6 +1,6 @@
 {
   "driver": {
-    "api": "autotrade.driver.api.noop.NoopApiDriver",
+    "api": "autotrade.driver.api.bitflyer.BitflyerFxApiDriver",
     "chart": "autotrade.driver.chart.bitflyer.BitflyerChartDriver",
     "strategy": "autotrade.driver.strategy.yushiga.MovingAverageStrategy"
   }
