@@ -1,5 +1,6 @@
 import json
 import subprocess
+import logging
 
 class MovingAverageStrategy:
     __short_term = 30
@@ -7,6 +8,12 @@ class MovingAverageStrategy:
     __rate = 0.007
 
     def __init__(self):
+        self.logger = logging.getLogger(__name__)
+        sh = logging.StreamHandler()
+        formatter = logging.Formatter('%(asctime)s:%(lineno)d:%(levelname)s: %(message)s')
+        sh.setFormatter(formatter)
+        self.logger.addHandler(sh)
+        self.logger.setLevel(20)
         return
 
     def calc_moving_average(self, index, range_minutes):
@@ -48,14 +55,31 @@ class MovingAverageStrategy:
         # 交点計算
         intersection = self.calc_intersection(short_slope, short_intercept, long_slope, long_intercept)
 
+        # ログ
+        self.logger.info('Short Slope: %f, Long Slope: %f' % (short_slope, long_slope))
+        self.logger.info('Distance from intersection: %f' % abs(close_time - intersection))
+        self.logger.info('Close Price: %d' % close_price)
+
         if abs(close_time - intersection) < short_term * 60 * UNIT:
-            if short_slope > long_slope and long_slope > 0:
+            # 買い
+            if short_slope > long_slope and short_slope > 0:
+                self.logger.info('Golden Cross')
                 if (close_price - short_ma) / short_ma < self.__rate:
-                    if btc * close_price < jpy :
-                        return 'buy', jpy
-            elif short_slope < long_slope:
+                    # 建玉なし
+                    if btc == 0:
+                        return 'buy', round(JPY / close_price, 4)
+                    # 売りの建玉あり
+                    elif btc < 0:
+                        return 'buy', -btc
+            # 売り
+            elif short_slope < long_slope and short_slope < 0:
+                self.logger.info('Dead Cross')
                 if (short_ma - close_price) / short_ma < self.__rate:
-                    if btc * close_price > jpy:
+                    # 建玉なし
+                    if btc == 0:
+                        return 'sell', round(JPY / close_price, 4)
+                    # 買いの建玉あり
+                    if btc > 0:
                         return 'sell', btc
 
         return 'nothing', 0
@@ -67,4 +91,5 @@ class MovingAverageStrategy:
         result = {}
         balance = api_dirver.get_balance()
         result['action'], result['amount'] = self.calc_next_action(balance['JPY'], balance['BTC'])
+        self.logger.info('Result: %s' % str(result))
         return json.dumps(result)

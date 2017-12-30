@@ -15,7 +15,7 @@ class BitflyerFxApiDriver():
             else:
                 size = float(pos['size']) * -1
             result["BTC"] = size
-            result["JPY"] = 0.0
+            result["JPY"] = collateral['collateral']
         else:
             result["BTC"] = 0.0
             result["JPY"] = collateral['collateral']
@@ -23,20 +23,20 @@ class BitflyerFxApiDriver():
 
     def execute(self, strategy_result):
         return getattr(self, strategy_result.get('action'))(strategy_result.get('amount'))
-    
+
     def buy(self, amount):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         r = api.sendchildorder(product_code="FX_BTC_JPY",
                        child_order_type="MARKET",
                        side="BUY",
-                       size=round(self.jpy_to_size("FX_BTC", amount), 4),
+                       size=amount,
                        minute_to_expire=10000,
                        time_in_force="GTC"
                        )
         print(round(self.jpy_to_size("FX_BTC", amount), 4))
         print(r)
         return r
-    
+
     def sell(self, amount):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         r = api.sendchildorder(product_code="FX_BTC_JPY",
@@ -51,7 +51,7 @@ class BitflyerFxApiDriver():
     def nothing(self, amount):
         print("nothing")
         return 200
-    
+
     def jpy_to_size(self, currency, price):
         api = pybitflyer.API()
         ticker =  api.ticker(product_code="%s_JPY" % currency)
@@ -68,7 +68,7 @@ class BitflyerApiDriver():
 
     def execute(self, strategy_result):
         return getattr(self, strategy_result.get('action'))(strategy_result.get('amount'))
-    
+
     def buy(self, amount):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         r = api.sendchildorder(product_code="FX_BTC_JPY",
@@ -79,7 +79,7 @@ class BitflyerApiDriver():
                        time_in_force="GTC"
                        )
         return r.status_code
-    
+
     def sell(self, amount):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         r = api.sendchildorder(product_code="FX_BTC_JPY",
@@ -94,7 +94,7 @@ class BitflyerApiDriver():
     def nothing(self):
         print("nothing")
         return 200
-    
+
     def jpy_to_size(self, currency, price):
         api = pybitflyer.API()
         ticker =  api.ticker(product_code="%s_JPY" % currency)
