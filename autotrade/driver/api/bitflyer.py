@@ -10,7 +10,11 @@ class BitflyerFxApiDriver():
         collateral = api.getcollateral()
         if len(positions) > 0:
             pos = positions.pop()
-            result["BTC"] = pos['size']
+            if pos["side"] == "BUY":
+                size = float(pos['size'])
+            else:
+                size = float(pos['size']) * -1
+            result["BTC"] = size
             result["JPY"] = 0.0
         else:
             result["BTC"] = 0.0
