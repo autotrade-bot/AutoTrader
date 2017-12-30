@@ -67,7 +67,7 @@ class MovingAverageStrategy:
                 if (close_price - short_ma) / short_ma < self.__rate:
                     # 建玉なし
                     if btc == 0:
-                        return 'buy', round(JPY / close_price, 4)
+                        return 'buy', round(jpy / close_price, 4)
                     # 売りの建玉あり
                     elif btc < 0:
                         return 'buy', -btc
@@ -77,7 +77,7 @@ class MovingAverageStrategy:
                 if (short_ma - close_price) / short_ma < self.__rate:
                     # 建玉なし
                     if btc == 0:
-                        return 'sell', round(JPY / close_price, 4)
+                        return 'sell', round(jpy / close_price, 4)
                     # 買いの建玉あり
                     if btc > 0:
                         return 'sell', btc
