@@ -1,6 +1,15 @@
 CHANGES
 =======
 
+* Add logger and enable the strategy to do short selling
+* mod get\_balance: if it has a short, btc balance will be returned minus
+* fix kusobagu
+* fix worker to print log
+* fix some fx api
+* Update bitflyer.py
+* Fix api url
+* setup setuptools
+* Fix indent
 * add strategy
 * mod requirements.txt
 * fix driver
