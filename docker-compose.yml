@@ -1,0 +1,5 @@
+worker:
+  build: .
+  environment:
+    - API_KEY=
+    - API_SECRET=
