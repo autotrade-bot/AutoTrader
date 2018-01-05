@@ -16,9 +16,10 @@ class AutotradeWorker():
         return json.load(open(conf_path))
 
     def execute(self):
-        action_json = self.drivers['strategy'].get_next_action(self.drivers['api'])
-        print(action_json)
-        return self.drivers['api'].execute(json.loads(action_json))
+        action_json = json.loads(self.drivers['strategy'].get_next_action(self.drivers['api']))
+        if action_json.get("action") != "nothing":
+            self.drivers['notification'].post(self.drivers['api'].notification_text(action_json))
+        return self.drivers['api'].execute(action_json)
 
     def test(self):
         action_json = '{"action": "buy", "amount": "5000"}'
