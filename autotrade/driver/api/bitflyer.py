@@ -80,8 +80,8 @@ class BitflyerFxApiDriver():
             else:
                 profit_text = "profit and loss: {0} yen\n".format((float(p.get("price")) - float(board.get("mid_price"))) * float(p.get("size")))
         else:
-            position_text = "no position.\n"
-            profit_text = "no profits.\n"
+            position_text = ""
+            profit_text = ""
         return action_text + position_text + profit_text
 
 
