@@ -18,7 +18,8 @@ class AutotradeWorker():
     def execute(self):
         action_json = json.loads(self.drivers['strategy'].get_next_action(self.drivers['api']))
         if action_json.get("action") != "nothing":
-            self.drivers['notification'].post(self.drivers['api'].notification_text(action_json))
+            action, price, position, profit = self.drivers['api'].collect_data(action_json)
+            self.drivers['notification'].post(action, price, position, profit)
         return self.drivers['api'].execute(action_json)
 
     def test(self):

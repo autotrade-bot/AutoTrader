@@ -65,24 +65,22 @@ class BitflyerFxApiDriver():
     """
     通知用メソッド
     params: なし
-    return: 通知本文
+    return: data
     """
-    def notification_text(self, action_json):
+    def collect_data(self, action_json):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         board = api.board(product_code="FX_BTC_JPY") 
-        action_text = 'action: {0}, amount: {1}, now price: {2}\n'.format(action_json.get('action'), action_json.get('amount'), board.get("mid_price"))
         positions = api.getpositions(product_code="FX_BTC_JPY")
         if len(positions) > 0:
-            p = positions.pop()
-            position_text = "now position  {0}, price: {1}, open date: {2}\n".format(p.get('side'), p.get('price'), p.get('open_date'))
-            if p.get("side") == "BUY":
-                profit_text = "profit and loss: {0} yen\n".format((float(board.get("mid_price")) - float(p.get("price"))) * float(p.get("size")))
+            position = positions.pop()
+            if position.get("side") == "BUY":
+                profit = (float(board.get("mid_price")) - float(position.get("price"))) * float(position.get("size"))
             else:
-                profit_text = "profit and loss: {0} yen\n".format((float(p.get("price")) - float(board.get("mid_price"))) * float(p.get("size")))
+                profit = (float(position.get("price")) - float(board.get("mid_price"))) * float(position.get("size"))
         else:
-            position_text = ""
-            profit_text = ""
-        return action_text + position_text + profit_text
+            position = None
+            profit = None
+        return action_json, board.get("mid_price"), position, profit
 
 
     def jpy_to_size(self, currency, price):
