@@ -20,12 +20,17 @@ class SQLiteStoreDriver():
         )
         metadata.create_all()
 
-    def put_trade_history(self, side, position_status, profit, created_at):
-       # self.TradeHistory.insert().execute(
-       #         side=side, 
-       #         position_status=position_status,
-       #         profit=profit,
-       #         created_at=created_at)
+    def put_trade_history(self, side, price, position, profit, created_at):
+        if position is None:
+            position_status = 'close'
+        else:
+            position_status = position.get('side')
+        self.TradeHistory.insert().execute(
+                side=side, 
+                price=price,
+                position_status=position_status,
+                profit=profit,
+                created_at=created_at)
         with open('/mnt/history.csv', 'a') as f:
             f.write('{0},{1},{2},{3},\n'.format(side, position_status, profit, created_at))
 
