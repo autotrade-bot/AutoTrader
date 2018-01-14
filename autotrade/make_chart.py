@@ -16,7 +16,7 @@ from dateutil.parser import parse
 from pytz import timezone
 class SQLiteStoreDriver():
     def __init__(self):
-        engine = create_engine('sqlite:///ohlc.db', echo=True)
+        engine = create_engine('sqlite:////tmp/ohlc.db', echo=True)
         metadata = MetaData()
         metadata.bind = engine
         
