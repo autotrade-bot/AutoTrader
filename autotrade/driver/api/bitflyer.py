@@ -3,6 +3,13 @@ import os
 
 class BitflyerFxApiDriver():
 
+    def get_history(self):
+        api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
+        result = []
+        for execution in api.getchildorders(product_code="FX_BTC_JPY", child_order_state="COMPLETED"):
+            result.append({'size': execution.get('size'), 'side': execution.get('side'), 'price': execution.get('price'), 'executed_at': execution.get('child_order_date')})
+        return result
+
     def get_balance(self):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         result = {}
@@ -33,8 +40,6 @@ class BitflyerFxApiDriver():
                        minute_to_expire=10000,
                        time_in_force="GTC"
                        )
-        print(round(self.jpy_to_size("FX_BTC", amount), 4))
-        print(r)
         return r
 
     def sell(self, amount):
@@ -51,6 +56,32 @@ class BitflyerFxApiDriver():
     def nothing(self, amount):
         print("nothing")
         return 200
+
+    def price(self):
+        api = pybitflyer.API()
+        ticker =  api.ticker(product_code="FX_BTC_JPY")
+        return ticker.get('best_bid')
+    
+    """
+    通知用メソッド
+    params: なし
+    return: data
+    """
+    def collect_data(self, action_json):
+        api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
+        board = api.board(product_code="FX_BTC_JPY") 
+        positions = api.getpositions(product_code="FX_BTC_JPY")
+        if len(positions) > 0:
+            position = positions.pop()
+            if position.get("side") == "BUY":
+                profit = (float(board.get("mid_price")) - float(position.get("price"))) * float(position.get("size"))
+            else:
+                profit = (float(position.get("price")) - float(board.get("mid_price"))) * float(position.get("size"))
+        else:
+            position = None
+            profit = None
+        return action_json, board.get("mid_price"), position, profit
+
 
     def jpy_to_size(self, currency, price):
         api = pybitflyer.API()
