@@ -1,5 +1,7 @@
+from datetime import datetime
 import pybitflyer
 import os
+import hashlib
 
 class BitflyerFxApiDriver():
 
@@ -72,6 +74,7 @@ class BitflyerFxApiDriver():
         board = api.board(product_code="FX_BTC_JPY")
         positions = api.getpositions(product_code="FX_BTC_JPY")
         if len(positions) > 0:
+            trade_id = hashlib.sha256(''.join([p['open_date'] for p in positions])).hexdigest()[0:20]
             position = positions.pop()
             if position.get("side") == "BUY":
                 profit = (float(board.get("mid_price")) - float(position.get("price"))) * float(position.get("size"))
@@ -80,7 +83,8 @@ class BitflyerFxApiDriver():
         else:
             position = None
             profit = None
-        return action_json, board.get("mid_price"), position, profit
+            trade_id = hashlib.sha256(str(datetime.now())).hexdigest()[0:20]
+        return trade_id, action_json, board.get("mid_price"), position, profit
 
 
     def jpy_to_size(self, currency, price):

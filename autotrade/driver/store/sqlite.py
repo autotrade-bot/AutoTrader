@@ -7,11 +7,12 @@ class SQLiteStoreDriver():
         engine = create_engine('mysql+pymysql://root:password@mysql/autotrade?charset=utf8', echo=True)
         metadata = MetaData()
         metadata.bind = engine
-        
+
         # menuテーブルの定義
         self.TradeHistory = Table(
           'trade_history', metadata,
           Column('id', Integer, primary_key=True),
+          Column('trade_id', String(64)),
           Column('side', String(64)), # buy or sell
           Column('price', Integer),
           Column('position_status', String(64)), # open or close
@@ -20,13 +21,14 @@ class SQLiteStoreDriver():
         )
         metadata.create_all()
 
-    def put_trade_history(self, side, price, position, profit, created_at):
+    def put_trade_history(self, trade_id, side, price, position, profit, created_at):
         if position is None:
             position_status = 'close'
         else:
             position_status = position.get('side')
         self.TradeHistory.insert().execute(
-                side=side, 
+                trade_id=trade_id,
+                side=side,
                 price=price,
                 position_status=position_status,
                 profit=profit,
@@ -45,4 +47,3 @@ class SQLiteStoreDriver():
         from_date = day.replace(hour=0, minute=0)
         to_date = day.replace(hour=23, minute=59)
         return self.TradeHistory.select().where(from_date <= self.TradeHistory.c.created_at <= to_date).execute().fetchall()
-
