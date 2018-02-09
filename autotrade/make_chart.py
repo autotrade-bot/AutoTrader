@@ -16,7 +16,7 @@ from dateutil.parser import parse
 from pytz import timezone
 class SQLiteStoreDriver():
     def __init__(self):
-        engine = create_engine('sqlite:////tmp/ohlc.db', echo=True)
+        engine = create_engine('mysql+pymysql://root:password@mysql/autotrade?charset=utf8', echo=True)
         metadata = MetaData()
         metadata.bind = engine
         
@@ -24,11 +24,11 @@ class SQLiteStoreDriver():
         self.OHLC = Table(
           'ohlc', metadata,
           Column('id', Integer, primary_key=True),
-          Column('open', String), # buy or sell
+          Column('open', Integer), # buy or sell
           Column('high', Integer),
-          Column('low', String), # open or close
+          Column('low', Integer), # open or close
           Column('close', Integer),
-          Column('created_at', DateTime),
+          Column('created_at', DateTime, unique=True),
         )
         metadata.create_all()
 

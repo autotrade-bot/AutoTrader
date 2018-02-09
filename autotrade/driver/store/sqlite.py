@@ -4,7 +4,7 @@ from datetime import datetime
 
 class SQLiteStoreDriver():
     def __init__(self):
-        engine = create_engine('sqlite:///trade_history.db', echo=True)
+        engine = create_engine('mysql+pymysql://root:password@mysql/autotrade?charset=utf8', echo=True)
         metadata = MetaData()
         metadata.bind = engine
         
@@ -12,11 +12,11 @@ class SQLiteStoreDriver():
         self.TradeHistory = Table(
           'trade_history', metadata,
           Column('id', Integer, primary_key=True),
-          Column('side', String), # buy or sell
+          Column('side', String(64)), # buy or sell
           Column('price', Integer),
-          Column('position_status', String), # open or close
+          Column('position_status', String(64)), # open or close
           Column('profit', Integer),
-          Column('created_at', DateTime),
+          Column('created_at', DateTime, unique=True),
         )
         metadata.create_all()
 
