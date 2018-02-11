@@ -1,5 +1,41 @@
-worker:
-  build: .
-  environment:
-    - API_KEY=
-    - API_SECRET=
+version: '2'
+services:
+  worker:
+    restart: always
+    build: .
+    volumes:
+      - ./history:/tmp
+    links:
+      - mysql
+    env_file: ./envrc
+    command: bash -c "cd /mnt/autotrade && while true; do python worker.py; sleep 60; done;"
+  chart:
+    restart: always
+    volumes:
+      - ./history:/tmp
+    links:
+      - mysql
+    build: .
+    command: bash -c "cd /mnt/autotrade && python make_chart.py"
+  metabase:
+    restart: always
+    image: metabase/metabase
+    env_file: ./envrc
+    links:
+      - mysql
+    volumes:
+      - ./history:/tmp
+      - ./metabase:/metabase-data
+    ports:
+     - 3000:3000
+  mysql:
+    restart: always
+    image: mysql
+    env_file: ./envrc
+    volumes:
+     - ./db:/var/lib/mysql
+     - ./history:/mnt
+networks:
+  default:
+    external:
+      name: nginxproxy_default
