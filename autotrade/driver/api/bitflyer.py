@@ -69,7 +69,7 @@ class BitflyerFxApiDriver():
     params: なし
     return: data
     """
-    def collect_data(self, action_json):
+    def collect_data(self):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         board = api.board(product_code="FX_BTC_JPY")
         positions = api.getpositions(product_code="FX_BTC_JPY")
@@ -84,7 +84,7 @@ class BitflyerFxApiDriver():
             position = None
             profit = None
             trade_id = hashlib.sha256(str(datetime.now())).hexdigest()[0:20]
-        return trade_id, action_json, board.get("mid_price"), position, profit
+        return trade_id, board.get("mid_price"), positions, profit
 
 
     def jpy_to_size(self, currency, price):
