@@ -1,5 +1,7 @@
+from datetime import datetime
 import pybitflyer
 import os
+import hashlib
 
 class BitflyerFxApiDriver():
 
@@ -16,11 +18,12 @@ class BitflyerFxApiDriver():
         positions = api.getpositions(product_code="FX_BTC_JPY")
         collateral = api.getcollateral()
         if len(positions) > 0:
-            pos = positions.pop()
-            if pos["side"] == "BUY":
-                size = float(pos['size'])
-            else:
-                size = float(pos['size']) * -1
+            size = 0.0
+            for pos in positions:
+                if pos["side"] == "BUY":
+                    size += float(pos['size'])
+                else:
+                    size += float(pos['size']) * -1
             result["BTC"] = size
             result["JPY"] = collateral['collateral']
         else:
@@ -61,17 +64,17 @@ class BitflyerFxApiDriver():
         api = pybitflyer.API()
         ticker =  api.ticker(product_code="FX_BTC_JPY")
         return ticker.get('best_bid')
-    
     """
     通知用メソッド
     params: なし
     return: data
     """
-    def collect_data(self, action_json):
+    def collect_data(self):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
-        board = api.board(product_code="FX_BTC_JPY") 
+        board = api.board(product_code="FX_BTC_JPY")
         positions = api.getpositions(product_code="FX_BTC_JPY")
         if len(positions) > 0:
+            trade_id = hashlib.sha256(''.join([p['open_date'] for p in positions]).encode('utf-8')).hexdigest()[0:20]
             position = positions.pop()
             if position.get("side") == "BUY":
                 profit = (float(board.get("mid_price")) - float(position.get("price"))) * float(position.get("size"))
@@ -80,7 +83,8 @@ class BitflyerFxApiDriver():
         else:
             position = None
             profit = None
-        return action_json, board.get("mid_price"), position, profit
+            trade_id = hashlib.sha256(str(datetime.now()).encode('utf-8')).hexdigest()[0:20]
+        return trade_id, board.get("mid_price"), positions, profit
 
 
     def jpy_to_size(self, currency, price):

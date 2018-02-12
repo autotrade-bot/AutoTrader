@@ -4,28 +4,35 @@ from datetime import datetime
 
 class SQLiteStoreDriver():
     def __init__(self):
-        engine = create_engine('sqlite:///trade_history.db', echo=True)
+        engine = create_engine('mysql+pymysql://root:password@mysql/autotrade?charset=utf8', echo=True)
         metadata = MetaData()
         metadata.bind = engine
-        
+
         # menuテーブルの定義
         self.TradeHistory = Table(
           'trade_history', metadata,
           Column('id', Integer, primary_key=True),
-          Column('side', String), # buy or sell
+          Column('trade_id', String(64)),
+          Column('side', String(64)), # buy or sell
           Column('price', Integer),
-          Column('position_status', String), # open or close
+          Column('position_status', String(64)), # open or close
           Column('profit', Integer),
-          Column('created_at', DateTime),
+          Column('created_at', DateTime, unique=True),
         )
         metadata.create_all()
 
-    def put_trade_history(self, side, position_status, profit, created_at):
-       # self.TradeHistory.insert().execute(
-       #         side=side, 
-       #         position_status=position_status,
-       #         profit=profit,
-       #         created_at=created_at)
+    def put_trade_history(self, trade_id, side, price, positions, profit, created_at):
+        if positions:
+            position_status = 'close'
+        else:
+            position_status = positions.pop().get('side')
+        self.TradeHistory.insert().execute(
+                trade_id=trade_id,
+                side=side,
+                price=price,
+                position_status=position_status,
+                profit=profit,
+                created_at=created_at)
         with open('/mnt/history.csv', 'a') as f:
             f.write('{0},{1},{2},{3},\n'.format(side, position_status, profit, created_at))
 
@@ -40,4 +47,3 @@ class SQLiteStoreDriver():
         from_date = day.replace(hour=0, minute=0)
         to_date = day.replace(hour=23, minute=59)
         return self.TradeHistory.select().where(from_date <= self.TradeHistory.c.created_at <= to_date).execute().fetchall()
-
