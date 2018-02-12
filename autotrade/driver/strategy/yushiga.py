@@ -84,12 +84,21 @@ class MovingAverageStrategy:
 
         return 'nothing', 0
 
-    def get_next_action(self, api_dirver):
+    def get_next_action(self, api_driver):
+        limit_profit = 200
+        limit_loss = -120
+        trade_id, price, positions, profit = api_driver.collect_data()
+        if profit >= limit_profit or profit <= limit_loss:
+            amount = 0.0
+            action = p[0].get('side').lower()
+            for p in positions:
+                amount += float(p.get('size'))
+            return {'action', action, 'amount': amount}
         p = subprocess.Popen('curl https://api.cryptowat.ch/markets/bitflyer/btcfxjpy/ohlc?periods=60', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         p.wait()
         self.chart = json.loads(p.stdout.read().decode('utf-8'))['result']['60']
         result = {}
-        balance = api_dirver.get_balance()
+        balance = api_driver.get_balance()
         result['action'], result['amount'] = self.calc_next_action(balance['JPY'], balance['BTC'])
         self.logger.info('Result: %s' % str(result))
         return json.dumps(result)
