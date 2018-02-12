@@ -21,11 +21,11 @@ class SQLiteStoreDriver():
         )
         metadata.create_all()
 
-    def put_trade_history(self, trade_id, side, price, position, profit, created_at):
-        if position is None:
+    def put_trade_history(self, trade_id, side, price, positions, profit, created_at):
+        if positions:
             position_status = 'close'
         else:
-            position_status = position.get('side')
+            position_status = positions.pop().get('side')
         self.TradeHistory.insert().execute(
                 trade_id=trade_id,
                 side=side,
