@@ -6,6 +6,8 @@ class MovingAverageStrategy:
     __short_term = 30
     __long_term = 120
     __rate = 0.007
+    __limit_profit = 200
+    __limit_loss = -120
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
@@ -85,15 +87,13 @@ class MovingAverageStrategy:
         return 'nothing', 0
 
     def get_next_action(self, api_driver):
-        limit_profit = 200
-        limit_loss = -120
         trade_id, price, positions, profit = api_driver.collect_data()
-        if profit >= limit_profit or profit <= limit_loss:
+        if profit >= self.__limit_profit or profit <= self.__limit_loss:
             amount = 0.0
-            action = p[0].get('side').lower()
+            action = positions[0].get('side').lower()
             for p in positions:
                 amount += float(p.get('size'))
-            return {'action', action, 'amount': amount}
+            return {'action': action, 'amount': amount}
         p = subprocess.Popen('curl https://api.cryptowat.ch/markets/bitflyer/btcfxjpy/ohlc?periods=60', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         p.wait()
         self.chart = json.loads(p.stdout.read().decode('utf-8'))['result']['60']
