@@ -24,9 +24,10 @@ class SlackNotificationDriver():
           type: float
           ex: 100 or -200 (yen)
     """
-    def post(self, action, price, position, profit):
+    def post(self, action, price, positions, profit):
         action_text = 'action: {0}, amount: {1}, now price: {2}\n'.format(action.get('action'), action.get('amount'), price)
-        if position is not None:
+        if positions is not None and len(positions) > 0:
+            position = positions[0]
             position_text = "now position  {0}, price: {1}, open date: {2}\n".format(position.get('side'), position.get('price'), position.get('open_date'))
             profit_text = "profit and loss: {0} yen\n".format(profit)
         else:

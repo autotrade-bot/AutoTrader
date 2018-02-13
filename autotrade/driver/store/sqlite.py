@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, DateTime, and_
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, Float, String, DateTime, and_
 from datetime import datetime
 
 
@@ -17,24 +17,27 @@ class SQLiteStoreDriver():
           Column('price', Integer),
           Column('position_status', String(64)), # open or close
           Column('profit', Integer),
+          Column('collateral', Float),
           Column('created_at', DateTime, unique=True),
         )
         metadata.create_all()
 
     def put_trade_history(self, trade_id, side, price, positions, profit, created_at):
-        if positions:
+        collateral = 0.0
+        if positions is None or len(positions) == 0:
             position_status = 'close'
         else:
+            for p in positions:
+                collateral += float(p.get('require_collateral'))
             position_status = positions.pop().get('side')
         self.TradeHistory.insert().execute(
                 trade_id=trade_id,
                 side=side,
                 price=price,
                 position_status=position_status,
+                collateral=collateral,
                 profit=profit,
                 created_at=created_at)
-        with open('/mnt/history.csv', 'a') as f:
-            f.write('{0},{1},{2},{3},\n'.format(side, position_status, profit, created_at))
 
     def get_all(self):
         return self.TradeHistory.select().execute().fetchall()
