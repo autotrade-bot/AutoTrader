@@ -100,7 +100,7 @@ class MovingAverageStrategy:
                     action = 'buy'
                 elif action == 'buy':
                     action = 'sell'
-                result = {'action': action, 'amount': amount}
+                result = {'action': action, 'amount': round(amount, 4)}
                 self.logger.info('Result: %s' % str(result))
                 return json.dumps(result)
         p = subprocess.Popen('curl https://api.cryptowat.ch/markets/bitflyer/btcfxjpy/ohlc?periods=60', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
