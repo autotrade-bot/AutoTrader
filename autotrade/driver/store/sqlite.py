@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, Float, String, DateTime, and_
 from datetime import datetime
+from pytz import timezone
 
 
 class SQLiteStoreDriver():
@@ -39,7 +40,7 @@ class SQLiteStoreDriver():
                 position_status=position_status,
                 collateral=collateral,
                 profit=profit,
-                created_at=created_at)
+                created_at=created_at.astimezone(timezone('Asia/Tokyo')))
 
     def get_all(self):
         return self.TradeHistory.select().execute().fetchall()
