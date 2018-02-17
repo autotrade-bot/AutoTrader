@@ -22,13 +22,15 @@ class SQLiteStoreDriver():
         )
         metadata.create_all()
 
-    def put_trade_history(self, trade_id, side, price, positions, profit, created_at):
+    def put_trade_history(self, trade_id, side, price, positions, created_at):
         collateral = 0.0
+        profit = 0.0
         if positions is None or len(positions) == 0:
             position_status = 'close'
         else:
             for p in positions:
                 collateral += float(p.get('require_collateral'))
+                profit += float(p.get('pnl'))
             position_status = positions.pop().get('side')
         self.TradeHistory.insert().execute(
                 trade_id=trade_id,
