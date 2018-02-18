@@ -88,7 +88,7 @@ class BitflyerFxApiDriver():
             positions = None
             profit = None
             trade_id = hashlib.sha256(str(datetime.now()).encode('utf-8')).hexdigest()[0:20]
-        return trade_id, board.get("mid_price"), positions, profit, require_collateral
+        return {'trade_id': trade_id, 'price': board.get("mid_price"), 'positions': positions, 'profit': profit, 'require_collateral': require_collateral}
 
 
     def jpy_to_size(self, currency, price):

@@ -6,8 +6,6 @@ class MovingAverageStrategy:
     __short_term = 30
     __long_term = 120
     __rate = 0.007
-    __limit_profit = 200
-    __limit_loss = -120
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
@@ -94,4 +92,4 @@ class MovingAverageStrategy:
         balance = api_driver.get_balance()
         result['action'], result['amount'] = self.calc_next_action(balance['JPY'], balance['BTC'])
         self.logger.info('Result: %s' % str(result))
-        return json.dumps(result)
+        return result
