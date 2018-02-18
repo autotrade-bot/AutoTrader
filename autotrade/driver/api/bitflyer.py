@@ -75,13 +75,13 @@ class BitflyerFxApiDriver():
         positions = api.getpositions(product_code="FX_BTC_JPY")
         if len(positions) > 0:
             trade_id = hashlib.sha256(''.join([p['open_date'] for p in positions]).encode('utf-8')).hexdigest()[0:20]
-            position = positions[0]
-            if position.get("side") == "BUY":
-                profit = (float(board.get("mid_price")) - float(position.get("price"))) * float(position.get("size"))
-            else:
-                profit = (float(position.get("price")) - float(board.get("mid_price"))) * float(position.get("size"))
+            for position in positions:
+                if position.get("side") == "BUY":
+                    profit += (float(board.get("mid_price")) - float(position.get("price"))) * float(position.get("size"))
+                else:
+                    profit += (float(position.get("price")) - float(board.get("mid_price"))) * float(position.get("size"))
         else:
-            position = None
+            positions = None
             profit = None
             trade_id = hashlib.sha256(str(datetime.now()).encode('utf-8')).hexdigest()[0:20]
         return trade_id, board.get("mid_price"), positions, profit

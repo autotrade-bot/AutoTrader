@@ -1,9 +1,11 @@
 from oslo_utils import importutils
 from dateutil.parser import parse
+from autotrade.util import AutotradeUtils
 import datetime
 import json
 class AutotradeWorker():
     def __init__(self):
+        self.utils = AutotradeUtils()
         self.conf = self.load_conf('conf.json')
         self.drivers = self.load_driver(self.conf)
 
@@ -20,7 +22,7 @@ class AutotradeWorker():
     def execute(self):
         action_json = json.loads(self.drivers['strategy'].get_next_action(self.drivers['api']))
         trade_id, price, positions, profit = self.drivers['api'].collect_data()
-        self.drivers['store'].put_trade_history(trade_id, action_json.get("action"), price, positions, datetime.datetime.now())
+        self.drivers['store'].put_trade_history(trade_id, action_json.get("action"), price, positions, profit, datetime.datetime.now())
         return self.drivers['api'].execute(action_json)
 
     def test(self):
