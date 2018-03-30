@@ -1,33 +1,24 @@
-from oslo_utils import importutils
-from dateutil.parser import parse
+from autotrade.utils import Utils
 import datetime
-import json
 class AutotradeWorker():
     def __init__(self):
-        self.conf = self.load_conf('conf.json')
-        self.drivers = self.load_driver(self.conf)
-
-    def load_driver(self, conf):
-        drivers = {}
-        driver_info = conf['driver']
-        for key, val in driver_info.items():
-            drivers[key] = importutils.import_class(val)()
-        return drivers
-
-    def load_conf(self, conf_path):
-        return json.load(open(conf_path))
+        self.utils = Utils()
+        self.conf = self.utils.load_conf('conf.json')
+        self.drivers = self.utils.load_driver(self.conf)
 
     def execute(self):
-        action_json = json.loads(self.drivers['strategy'].get_next_action(self.drivers['api']))
-        trade_id, price, positions, profit = self.drivers['api'].collect_data()
-        self.drivers['store'].put_trade_history(trade_id, action_json.get("action"), price, positions, profit, datetime.datetime.now())
-        if action_json.get("action") != "nothing":
-            self.drivers['notification'].post(action_json, price, positions, profit)
+        #action_json = self.utils.check_limit_close(self.drivers['strategy'].get_next_action(self.drivers['api']))
+        action_json = self.drivers['strategy'].get_next_action(self.drivers['api'])
+        trade_data = self.drivers['api'].collect_data()
+        self.drivers['store'].put_trade_history(
+                trade_id=trade_data.get('trade_id'),
+                side=action_json.get("action"),
+                price=trade_data.get("price"),
+                positions=trade_data.get("positions"),
+                profit=trade_data.get("profit"),
+                created_at=datetime.datetime.now())
         return self.drivers['api'].execute(action_json)
 
-    def test(self):
-        action_json = '{"action": "buy", "amount": "5000"}'
-        self.drivers['api'].execute(json.loads(action_json))
 
 worker = AutotradeWorker()
 print(worker.execute())
