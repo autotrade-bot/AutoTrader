@@ -7,7 +7,8 @@ class AutotradeWorker():
         self.drivers = self.utils.load_driver(self.conf)
 
     def execute(self):
-        action_json = self.utils.check_limit_close(self.drivers['strategy'].get_next_action(self.drivers['api']))
+        #action_json = self.utils.check_limit_close(self.drivers['strategy'].get_next_action(self.drivers['api']))
+        action_json = self.drivers['strategy'].get_next_action(self.drivers['api'])
         trade_data = self.drivers['api'].collect_data()
         self.drivers['store'].put_trade_history(
                 trade_id=trade_data.get('trade_id'),
