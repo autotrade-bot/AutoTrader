@@ -73,18 +73,22 @@ class BitflyerFxApiDriver():
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         board = api.board(product_code="FX_BTC_JPY")
         positions = api.getpositions(product_code="FX_BTC_JPY")
+        require_collateral = 0.0
+        profit = 0.0
         if len(positions) > 0:
-            trade_id = hashlib.sha256(''.join([p['open_date'] for p in positions])).hexdigest()[0:20]
-            position = positions.pop()
-            if position.get("side") == "BUY":
-                profit = (float(board.get("mid_price")) - float(position.get("price"))) * float(position.get("size"))
-            else:
-                profit = (float(position.get("price")) - float(board.get("mid_price"))) * float(position.get("size"))
+            trade_id = hashlib.sha256(''.join([p['open_date'] for p in positions]).encode('utf-8')).hexdigest()[0:20]
+            for position in positions:
+                profit += float(position.get('pnl'))
+                require_collateral += float(position.get('require_collateral'))
+                #if position.get("side") == "BUY":
+                #    # profit += (float(board.get("mid_price")) - float(position.get("price"))) * float(position.get("size"))
+                #else:
+                #    profit += (float(position.get("price")) - float(board.get("mid_price"))) * float(position.get("size"))
         else:
-            position = None
+            positions = None
             profit = None
-            trade_id = hashlib.sha256(str(datetime.now())).hexdigest()[0:20]
-        return trade_id, board.get("mid_price"), positions, profit
+            trade_id = hashlib.sha256(str(datetime.now()).encode('utf-8')).hexdigest()[0:20]
+        return {'trade_id': trade_id, 'price': board.get("mid_price"), 'positions': positions, 'profit': profit, 'require_collateral': require_collateral}
 
 
     def jpy_to_size(self, currency, price):

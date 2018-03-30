@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, DateTime, and_
 from datetime import datetime
+from pytz import timezone
 from time import sleep
 import json
 import subprocess
@@ -40,12 +41,10 @@ def main():
     high_price = last_chart[2]
     low_price = last_chart[3]
     close_price = last_chart[4]
-    created_at = datetime.fromtimestamp(last_chart[0])
+    created_at = datetime.fromtimestamp(last_chart[0]).astimezone(timezone('Asia/Tokyo'))
     sqlite.put(open_price, high_price, low_price, close_price, created_at)
 
 if __name__ == '__main__':
     while True:
         main()
-        sleep(60)
-
-
+        sleep(30)
