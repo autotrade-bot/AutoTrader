@@ -10,6 +10,7 @@ Base = declarative_base()
 class TradeHistory(Base):
     __tablename__ = "trade_history"
     id = Column(Integer, primary_key=True)
+    revision = Column(String(20))
     trade_id = Column(String(64))
     side = Column(String(64)) # buy or sell
     price = Column(Integer)
@@ -21,6 +22,7 @@ class TradeHistory(Base):
 class Profit(Base):
     __tablename__ = 'profits'
     trade_id = Column('trade_id', String(64),primary_key=True, unique=True)
+    revision = Column(String(20))
     position_status = Column('position_status', String(64)) # open or close
     profit = Column('profit', Integer)
     collateral = Column('collateral', Float)
@@ -35,7 +37,7 @@ class SQLiteStoreDriver():
         self.session = create_session(bind=engine)
         metadata.create_all()
 
-    def put_trade_history(self, trade_id, side, price, positions, profit, created_at):
+    def put_trade_history(self, revision, trade_id, side, price, positions, profit, created_at):
         collateral = 0.0
         if positions is None or len(positions) == 0:
             position_status = 'close'
@@ -46,6 +48,7 @@ class SQLiteStoreDriver():
         with self.session.begin():
            th = TradeHistory(
                     trade_id=trade_id,
+                    revision=revision,
                     side=side,
                     price=price,
                     position_status=position_status,
@@ -57,7 +60,7 @@ class SQLiteStoreDriver():
                return
            prof = self.session.query(Profit).filter_by(trade_id=trade_id).one_or_none()
            if not prof:
-               prof = Profit(trade_id=trade_id, position_status=position_status, profit=profit, collateral=collateral, created_at=datetime.now())
+               prof = Profit(trade_id=trade_id, revision=revision, position_status=position_status, profit=profit, collateral=collateral, created_at=datetime.now())
                self.session.add(prof)
            prof.profit = profit
            prof.closed_at = datetime.now()

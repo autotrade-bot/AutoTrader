@@ -1,6 +1,8 @@
 import json
 import subprocess
 import logging
+import hashlib
+import os
 
 class MovingAverageStrategy:
     __short_term = 30
@@ -93,3 +95,12 @@ class MovingAverageStrategy:
         result['action'], result['amount'] = self.calc_next_action(balance['JPY'], balance['BTC'])
         self.logger.info('Result: %s' % str(result))
         return result
+
+    def get_revision(self):
+        sha256 = hashlib.sha256()
+        with open(os.path.abspath(__file__), 'r') as f:
+            while True:
+                buf = f.read(2047)
+                if not buf: break
+                sha256.update(buf.encode('utf-8'))
+        return sha256.hexdigest()[:15]
