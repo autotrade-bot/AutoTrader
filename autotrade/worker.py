@@ -11,6 +11,7 @@ class AutotradeWorker():
         action_json = self.drivers['strategy'].get_next_action(self.drivers['api'])
         trade_data = self.drivers['api'].collect_data()
         self.drivers['store'].put_trade_history(
+                revision=self.drivers['strategy'].get_revision(),
                 trade_id=trade_data.get('trade_id'),
                 side=action_json.get("action"),
                 price=trade_data.get("price"),
