@@ -102,5 +102,5 @@ class MovingAverageStrategy:
             while True:
                 buf = f.read(2047)
                 if not buf: break
-                sha256.update(buf)
+                sha256.update(buf.encode('utf-8'))
         return sha256.hexdigest()[:15]
