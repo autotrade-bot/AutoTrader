@@ -11,5 +11,9 @@ def instruct(ins_type):
 def reverse():
     return api.reverse()
 
+@route('/free')
+def free():
+    return api.free()
+
 if __name__ == "__main__":
-    run(host='localhost', port=8080, debug=True)
+    run(host='0.0.0.0', port=8080, debug=True)

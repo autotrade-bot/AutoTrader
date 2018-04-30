@@ -11,6 +11,11 @@ class API():
     def instruct(self, ins_type):
         self.conf['instruct'] = ins_type
         self.utils.save_conf(self.conf)
+    
+    def free(self):
+        if self.conf.get('instruct'):
+            self.conf['instruct'] = None
+            self.utils.save_conf(self.conf)
 
     def reverse(self):
         is_reverse = self.conf.get('is_reverse')
@@ -19,6 +24,4 @@ class API():
         else:
             self.conf['is_reverse'] = True
         self.utils.save_conf(self.conf)
-
-    def _load_driver(self, driver):
 
