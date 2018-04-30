@@ -13,7 +13,12 @@ class Utils():
 
     def load_conf(self, conf_path):
         self.conf = json.load(open(conf_path))
+        self.conf_path = conf_path
         return self.conf
+
+    def save_conf(self, conf):
+        with open(self.conf_path, 'w') as f:
+            json.dump(conf, f, indent=4)
 
     def check_limit_close(self, action_json):
         trade_data = self.drivers['api'].collect_data()

@@ -1,0 +1,24 @@
+from autotrade.utils import Utils
+import os
+
+class API():
+
+
+    def __init__(self):
+        self.utils = Utils()
+        self.conf = self.utils.load_conf(os.environ.get('CONF_PATH'))
+
+    def instruct(self, ins_type):
+        self.conf['instruct'] = ins_type
+        self.utils.save_conf(self.conf)
+
+    def reverse(self):
+        is_reverse = self.conf.get('is_reverse')
+        if type(is_reverse) == bool:
+            self.conf['is_reverse'] = not is_reverse
+        else:
+            self.conf['is_reverse'] = True
+        self.utils.save_conf(self.conf)
+
+    def _load_driver(self, driver):
+
