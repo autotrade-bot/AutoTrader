@@ -2,21 +2,19 @@ version: '2'
 services:
   worker:
     restart: always
-    build: .
+    image: autotrade/autotrade
     volumes:
-      - ./history:/tmp
+      - .:/mnt
     links:
       - mysql
     env_file: ./envrc
     command: bash -c "cd /mnt/autotrade && while true; do python worker.py; sleep 60; done;"
   chart:
     restart: always
-    volumes:
-      - ./history:/tmp
     links:
       - mysql
-    build: .
-    command: bash -c "cd /mnt/autotrade && python make_chart.py"
+    image: autotrade/autotrade
+    command: bash -c "cd /mnt/autotrade && while true; do python make_chart.py; done;"
   metabase:
     restart: always
     image: metabase/metabase
@@ -24,8 +22,7 @@ services:
     links:
       - mysql
     volumes:
-      - ./history:/tmp
-      - ./metabase:/metabase-data
+      - ./val/metabase:/metabase-data
     ports:
      - 3000:3000
   mysql:
@@ -34,8 +31,13 @@ services:
     env_file: ./envrc
     volumes:
      - ./db:/var/lib/mysql
-     - ./history:/mnt
-networks:
-  default:
-    external:
-      name: nginxproxy_default
+  grafana:
+    restart: always
+    image: grafana/grafana
+    env_file: ./envrc
+    links:
+      - mysql
+    volumes:
+      - ./val/grafana:/var/lib/grafana
+    ports:
+      - 3001:3000

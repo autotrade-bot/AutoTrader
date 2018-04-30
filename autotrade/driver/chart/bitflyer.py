@@ -2,7 +2,7 @@ import json
 import subprocess
 
 class BitflyerChartDriver():
-    def __init__(self):
+    def __init__(self, conf):
         pass
     
     def get(self, minutes=1):

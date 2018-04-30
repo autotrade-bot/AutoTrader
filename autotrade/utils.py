@@ -7,7 +7,7 @@ class Utils():
         drivers = {}
         driver_info = conf['driver']
         for key, val in driver_info.items():
-            drivers[key] = importutils.import_class(val)()
+            drivers[key] = importutils.import_class(val)(conf)
         self.drivers = drivers
         return drivers
 

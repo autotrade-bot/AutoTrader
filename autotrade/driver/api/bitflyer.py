@@ -5,6 +5,9 @@ import hashlib
 
 class BitflyerFxApiDriver():
 
+    def __init__(self, conf):
+        self.debug = conf.get('debug')
+
     def get_history(self):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         result = []
@@ -32,7 +35,10 @@ class BitflyerFxApiDriver():
         return result
 
     def execute(self, strategy_result):
-        return getattr(self, strategy_result.get('action'))(strategy_result.get('amount'))
+        if self.debug:
+            return {'debug': True, 'strategy_result': strategy_result}
+        else:
+            return getattr(self, strategy_result.get('action'))(strategy_result.get('amount'))
 
     def buy(self, amount):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])

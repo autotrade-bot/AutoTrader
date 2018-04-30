@@ -1,9 +1,7 @@
 {
   "driver": {
     "api": "autotrade.driver.api.bitflyer.BitflyerFxApiDriver",
-    "chart": "autotrade.driver.chart.bitflyer.BitflyerChartDriver",
     "strategy": "autotrade.driver.strategy.yushiga.MovingAverageStrategy",
-    "notification": "autotrade.driver.notification.slack.SlackNotificationDriver",
     "store": "autotrade.driver.store.sqlite.SQLiteStoreDriver"
   }
 }

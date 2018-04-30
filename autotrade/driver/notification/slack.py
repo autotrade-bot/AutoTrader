@@ -7,7 +7,7 @@ class SlackNotificationDriver():
     channel = os.environ.get("SLACK_CHANNEL")
     notify_user = os.environ.get("SLACK_NOTIFY_USER")
 
-    def __init__(self):
+    def __init__(self, conf):
         self.client = SlackClient(self.token)
     """
     params:
