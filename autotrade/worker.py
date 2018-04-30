@@ -1,9 +1,10 @@
 from autotrade.utils import Utils
 import datetime
+import os
 class AutotradeWorker():
     def __init__(self):
         self.utils = Utils()
-        self.conf = self.utils.load_conf('conf.json')
+        self.conf = self.utils.load_conf(os.environ.get("CONF_PATH"))
         self.drivers = self.utils.load_driver(self.conf)
 
     def execute(self):
