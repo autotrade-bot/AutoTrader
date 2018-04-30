@@ -1,6 +1,26 @@
 CHANGES
 =======
 
+* :Merge branch 'chart\_docker' of https://github.com/autotrade-bot/AutoTrader into chart\_docker
+* fix for python3
+* rm magic number and typo
+* add limit-opts
+* mod apram
+* divide env from docker-compose.yml
+* add trade\_id
+* mod for multiple collaterals
+* mod some change
+* fix path
+* add script for making candle chart
+* add sqlite
+* add req
+* add store
+* divide making text and collecting data
+* fix notification masssage
+* mod conf
+* add notification
+* mod docker compatible
+* Fix bug
 * Add logger and enable the strategy to do short selling
 * mod get\_balance: if it has a short, btc balance will be returned minus
 * fix kusobagu
