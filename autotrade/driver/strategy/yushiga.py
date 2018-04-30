@@ -9,7 +9,7 @@ class MovingAverageStrategy:
     __long_term = 120
     __rate = 0.007
 
-    def __init__(self):
+    def __init__(self, conf):
         self.logger = logging.getLogger(__name__)
         sh = logging.StreamHandler()
         formatter = logging.Formatter('%(asctime)s:%(lineno)d:%(levelname)s: %(message)s')

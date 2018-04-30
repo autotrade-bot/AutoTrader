@@ -30,7 +30,7 @@ class Profit(Base):
     closed_at = Column('closed_at', DateTime)
 
 class SQLiteStoreDriver():
-    def __init__(self):
+    def __init__(self, conf):
         engine = create_engine('mysql+pymysql://root:password@mysql/autotrade?charset=utf8', echo=True)
         metadata = MetaData()
         metadata.bind = engine
