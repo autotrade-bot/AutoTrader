@@ -1,3 +1,4 @@
+from autotrade.utils import Utils
 from datetime import datetime
 import pybitflyer
 import os
@@ -7,6 +8,17 @@ class BitflyerFxApiDriver():
 
     def __init__(self, conf):
         self.debug = conf.get('debug')
+        self.utils = Utils()
+
+    def close(self):
+        api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
+        positions = api.getpositions(product_code="FX_BTC_JPY")
+        if len(positions) > 0:
+            side = positions[0].get('side')
+            size = sum([float(p.get('size')) for p in positions])
+            return getattr(self, self.utils.reverse_action(side.lower()))(size)
+        else:
+            return None
 
     def get_history(self):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
