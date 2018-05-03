@@ -1,5 +1,14 @@
 version: '2'
 services:
+  api:
+    restart: always
+    image: autotrade/autotrade
+    volumes:
+      - ./autotrade/conf.json:/mnt/autotrade/conf.json
+    env_file: ./envrc
+    command: bash -c "python /mnt/autotrade/bin/app.py"
+    ports:
+      - 8000:8080
   worker:
     restart: always
     image: autotrade/autotrade
