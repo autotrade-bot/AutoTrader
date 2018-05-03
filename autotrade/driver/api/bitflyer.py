@@ -16,7 +16,7 @@ class BitflyerFxApiDriver():
         if len(positions) > 0:
             side = positions[0].get('side')
             size = sum([float(p.get('size')) for p in positions])
-            return getattr(self, self.utils.reverse_action(side.lower()))(size)
+            return getattr(self, self.utils.reverse_action(side.lower()))(round(size, 4))
         else:
             return None
 
