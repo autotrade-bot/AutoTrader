@@ -1,0 +1,8 @@
+{
+    "driver": {
+        "api": "autotrade.driver.api.bitflyer.BitflyerFxApiDriver",
+        "strategy": "autotrade.driver.strategy.yushiga.MovingAverageStrategy",
+        "store": "autotrade.driver.store.sqlite.SQLiteStoreDriver"
+    },
+    "is_reverse": false
+}

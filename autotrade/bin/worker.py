@@ -1,4 +1,4 @@
-from autotrade.utils import Utils
+from autotrade.lib.utils import Utils
 import datetime
 import os
 class AutotradeWorker():
