@@ -14,7 +14,7 @@ class AutotradeWorker():
         self.drivers['store'].put_trade_history(
                 revision=self.drivers['strategy'].get_revision(),
                 trade_id=trade_data.get('trade_id'),
-                side=action_json.get("action"),
+                side=self.utils.reverse(action_json.get("action")),
                 price=trade_data.get("price"),
                 positions=trade_data.get("positions"),
                 profit=trade_data.get("profit"),

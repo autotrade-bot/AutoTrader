@@ -1,7 +1,11 @@
 import json
+import os
 from oslo_utils import importutils
 
 class Utils():
+
+    def __init__(self):
+        self.conf = self.load_conf(os.environ.get("CONF_PATH"))
 
     def load_driver(self, conf):
         drivers = {}
@@ -36,7 +40,12 @@ class Utils():
                 return result
         return action_json
 
+    def reverse(self, action):
+        return self.reverse_action(action) if self.conf.get('is_reverse') else action
+
     def reverse_action(self, action):
+        action = action.lower()
+        print('reverse!! original = {0}'.format(action))
         if action == 'buy':
             return 'sell'
         elif action == 'sell':
