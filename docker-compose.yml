@@ -4,7 +4,7 @@ services:
     restart: always
     image: autotrade/autotrade
     volumes:
-      - ./autotrade/conf.json:/mnt/autotrade/conf.json
+      - ./conf.json:/mnt/autotrade/conf.json
     env_file: ./envrc
     command: bash -c "python /mnt/autotrade/bin/app.py"
     ports:
@@ -13,13 +13,15 @@ services:
     restart: always
     image: autotrade/autotrade
     volumes:
-      - .:/mnt
+      - ./conf.json:/mnt/autotrade/conf.json
     links:
       - mysql
     env_file: ./envrc
     command: bash -c "while true; do python /mnt/autotrade/bin/worker.py; sleep 60; done;"
   chart:
     restart: always
+    volumes:
+      - ./conf.json:/mnt/autotrade/conf.json
     links:
       - mysql
     image: autotrade/autotrade
