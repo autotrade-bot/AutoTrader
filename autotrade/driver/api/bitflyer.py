@@ -1,4 +1,4 @@
-from autotrade.utils import Utils
+from autotrade.lib.utils import Utils
 from datetime import datetime
 import pybitflyer
 import os

@@ -17,13 +17,13 @@ services:
     links:
       - mysql
     env_file: ./envrc
-    command: bash -c "cd /mnt/autotrade && while true; do python worker.py; sleep 60; done;"
+    command: bash -c "while true; do python /mnt/autotrade/bin/worker.py; sleep 60; done;"
   chart:
     restart: always
     links:
       - mysql
     image: autotrade/autotrade
-    command: bash -c "cd /mnt/autotrade && while true; do python make_chart.py; done;"
+    command: bash -c "while true; do python /mnt/autotrade/bin/make_chart.py; done;"
   metabase:
     restart: always
     image: metabase/metabase
