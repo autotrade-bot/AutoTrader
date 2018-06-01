@@ -8,13 +8,14 @@ class BitflyerFxApiDriver():
 
     def __init__(self, conf):
         self.debug = conf.get('debug')
+        self.api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         self.utils = Utils()
 
     def close(self):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
         positions = api.getpositions(product_code="FX_BTC_JPY")
         if len(positions) > 0:
-            side = positions[0].get('side')
+            side = self.get_position_status(positions)
             size = sum([float(p.get('size')) for p in positions])
             return getattr(self, self.utils.reverse_action(side.lower()))(round(size, 4))
         else:
@@ -26,6 +27,14 @@ class BitflyerFxApiDriver():
         for execution in api.getchildorders(product_code="FX_BTC_JPY", child_order_state="COMPLETED"):
             result.append({'size': execution.get('size'), 'side': execution.get('side'), 'price': execution.get('price'), 'executed_at': execution.get('child_order_date')})
         return result
+
+    def get_position_status(self, positions=None):
+        if not positions:
+            positions = self.api.getpositions(product_code="FX_BTC_JPY")
+        if len(positions) > 0:
+            return positions.pop().get('side').lower()
+        else:
+            return None
 
     def get_balance(self):
         api = pybitflyer.API(api_key=os.environ['API_KEY'], api_secret=os.environ['API_SECRET'])
