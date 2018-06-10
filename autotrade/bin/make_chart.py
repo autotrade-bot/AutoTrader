@@ -1,14 +1,16 @@
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, DateTime, and_
+from autotrade.lib.utils import Utils
 from datetime import datetime
 from pytz import timezone
 from time import sleep
+import os
 import json
 import subprocess
 
 
 class SQLiteStoreDriver():
     def __init__(self):
-        engine = create_engine('mysql+pymysql://root:password@mysql/autotrade?charset=utf8', echo=True)
+        engine = create_engine('mysql+pymysql://root:password@mysql/autotrade?charset=utf8', echo=False)
         metadata = MetaData()
         metadata.bind = engine
         
@@ -32,19 +34,21 @@ class SQLiteStoreDriver():
                 close=cl,
                 created_at=created_at)
 
-def main():
+def main(drivers):
     sqlite = SQLiteStoreDriver()
-    p = subprocess.Popen('curl https://api.cryptowat.ch/markets/bitflyer/btcfxjpy/ohlc?periods=60', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    p.wait()
-    last_chart = json.loads(p.stdout.read().decode('utf-8'))['result']['60'][-1]
-    open_price = last_chart[1]
-    high_price = last_chart[2]
-    low_price = last_chart[3]
-    close_price = last_chart[4]
-    created_at = datetime.fromtimestamp(last_chart[0]).astimezone(timezone('Asia/Tokyo'))
+
+    price = drivers.get("api").get_price()
+    open_price = price
+    high_price = price
+    low_price = price
+    close_price = price
+    created_at = datetime.now()
     sqlite.put(open_price, high_price, low_price, close_price, created_at)
 
 if __name__ == '__main__':
+    utils = Utils()
+    conf = utils.load_conf(os.environ.get("CONF_PATH"))
+    drivers = utils.load_driver(conf)
     while True:
-        main()
-        sleep(30)
+        main(drivers)
+        sleep(1)
