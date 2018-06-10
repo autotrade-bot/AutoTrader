@@ -10,7 +10,7 @@ import subprocess
 
 class SQLiteStoreDriver():
     def __init__(self):
-        engine = create_engine('mysql+pymysql://root:password@mysql/autotrade?charset=utf8', echo=True)
+        engine = create_engine('mysql+pymysql://root:password@mysql/autotrade?charset=utf8', echo=False)
         metadata = MetaData()
         metadata.bind = engine
         
@@ -51,4 +51,4 @@ if __name__ == '__main__':
     drivers = utils.load_driver(conf)
     while True:
         main(drivers)
-        sleep(5)
+        sleep(1)
