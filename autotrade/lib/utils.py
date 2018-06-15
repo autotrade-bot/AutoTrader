@@ -52,3 +52,6 @@ class Utils():
             return 'buy'
         else:
             return 'nothing'
+
+    def rm_sec(self, date):
+        return datetime.datetime(date.year, date.month, date.day, hour=date.hour, minute=date.minute, second=0, microsecond=0)
