@@ -24,7 +24,7 @@ six==1.11.0
 slackclient==1.1.0
 SQLAlchemy==1.2.0
 tornado==4.5.2
-urllib3==1.22
+urllib3==1.26.5
 websocket-client==0.46.0
 wrapt==1.10.11
 PyMySQL==0.8.0
