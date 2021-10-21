@@ -1,4 +1,4 @@
-Babel==2.5.1
+Babel==2.9.1
 certifi==2017.11.5
 chardet==3.0.4
 cycler==0.10.0
