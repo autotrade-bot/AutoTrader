@@ -9,7 +9,7 @@ matplotlib==2.1.1
 monotonic==1.4
 netaddr==0.7.19
 netifaces==0.10.6
-numpy==1.13.3
+numpy==1.22.0
 oslo.i18n==3.19.0
 oslo.utils==3.33.0
 pbr==3.1.1
