@@ -11,7 +11,7 @@ netaddr==0.7.19
 netifaces==0.10.6
 numpy==1.13.3
 oslo.i18n==3.19.0
-oslo.utils==3.33.0
+oslo.utils==4.10.1
 pbr==3.1.1
 pubnub==4.0.13
 pybitflyer==0.1.9
